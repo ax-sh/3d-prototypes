@@ -14,7 +14,11 @@ export type Center3dProps = {};
 const Model = () => {
   const ref = React.useRef();
   React.useEffect(() => {
-    console.log(ref.current);
+    // @ts-ignore
+    const { geometry } = ref.current || {};
+    const { boundingSphere, attributes, ...g } = geometry;
+
+    console.log(boundingSphere, attributes);
   }, []);
   useHelper(ref, BoxHelper, "#00f");
   return (
@@ -31,17 +35,20 @@ const Scene = () => {
   return (
     <group>
       <ambientLight />
+      <directionalLight intensity={10} />
       <pointLight ref={ref} intensity={44} args={[1]} />
       <Model />
-      {/*<Stage*/}
-      {/*  controls={ref}*/}
-      {/*  preset="rembrandt"*/}
-      {/*  intensity={1}*/}
-      {/*  environment="night"*/}
-      {/*>*/}
-      {/*    <Sphere/>*/}
-      {/*  /!*<Model />*!/*/}
-      {/*</Stage>*/}
+      {/*  NOTE stage doesnt rotate from center*/}
+      {/*<React.Suspense fallback={null}>*/}
+      {/*  <Stage*/}
+      {/*    // controls={ref}*/}
+      {/*    preset="rembrandt"*/}
+      {/*    intensity={1}*/}
+      {/*    environment="night"*/}
+      {/*  >*/}
+      {/*    <Model />*/}
+      {/*  </Stage>*/}
+      {/*</React.Suspense>*/}
     </group>
   );
 };
