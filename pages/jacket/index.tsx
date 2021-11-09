@@ -14,11 +14,24 @@ import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import { Group, Mesh } from "three";
 import { useThree } from "@react-three/fiber";
 
+const Loading = () => {
+  const {
+    // active,
+    progress,
+    // errors, item, loaded, total
+  } = useProgress();
+  return (
+    <Html style={{ color: "red" }} center>
+      <h1>{progress} % loaded</h1>
+    </Html>
+  );
+};
+
 const Lights = () => {
   return (
-    <>
+    <group>
       <ambientLight intensity={1} />
-    </>
+    </group>
   );
 };
 
@@ -71,19 +84,6 @@ const Scene = ({ url }: { url: string }) => {
       <Model url={url} ref={o} onPointerMove={onPointerMove} />
       <OrbitControls ref={orbit} />
     </mesh>
-  );
-};
-
-const Loading = () => {
-  const {
-    // active,
-    progress,
-    // errors, item, loaded, total
-  } = useProgress();
-  return (
-    <Html style={{ color: "red" }} center>
-      <h1>{progress} % loaded</h1>
-    </Html>
   );
 };
 
