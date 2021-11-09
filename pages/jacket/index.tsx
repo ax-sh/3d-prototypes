@@ -3,6 +3,7 @@ import * as THREE from "three";
 import {
   Html,
   OrbitControls,
+  OrbitControlsProps,
   useGLTF,
   // useHelper,
   useProgress,
@@ -10,10 +11,8 @@ import {
 import React from "react";
 
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
-import { BoxHelper, Group, Mesh } from "three";
+import { Group, Mesh } from "three";
 import { useThree } from "@react-three/fiber";
-
-const DEBUG = false;
 
 const Lights = () => {
   return (
@@ -34,10 +33,10 @@ function getBoundingSphere(o: Mesh) {
   return bbox.getBoundingSphere(new THREE.Sphere());
 }
 
-const Scene = () => {
+const Scene = ({ url }: { url: string }) => {
   const ref = React.useRef<Group>();
   const o = React.useRef<Mesh>();
-  const orbit = React.useRef<OrbitControls>();
+  const orbit = React.useRef<OrbitControlsProps>();
 
   // useHelper(o, BoxHelper, "#0f0");
   // useHelper(ref, BoxHelper, "#00f");
@@ -65,7 +64,6 @@ const Scene = () => {
     console.log(e, "<<<");
   };
 
-  const url = "./jacket.glb";
   return (
     <mesh ref={ref}>
       <Lights />
@@ -90,10 +88,11 @@ const Loading = () => {
 };
 
 export default function Index() {
+  const url = "./jacket.glb";
   return (
     <JacketCanvas>
       <React.Suspense fallback={<Loading />}>
-        <Scene />
+        <Scene url={url} />
       </React.Suspense>
     </JacketCanvas>
   );
