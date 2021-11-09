@@ -12,7 +12,7 @@ import React from "react";
 
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import { Group, Mesh } from "three";
-import { useThree } from "@react-three/fiber";
+import { PrimitiveProps, useThree } from "@react-three/fiber";
 
 const Loading = () => {
   const {
@@ -35,11 +35,12 @@ const Lights = () => {
   );
 };
 
+// @ts-ignore
 // eslint-disable-next-line react/display-name
-const Model = React.forwardRef(({ url, ...rest }: { url: string }, ref) => {
+const Model = React.forwardRef(({ url, ...rest }, ref) => {
   const { scene } = useGLTF(url);
   return <primitive object={scene} ref={ref} {...rest} />;
-});
+}) as PrimitiveProps;
 
 function getBoundingSphere(o: Mesh) {
   const bbox = new THREE.Box3().setFromObject(o);
@@ -53,6 +54,8 @@ const Scene = ({ url }: { url: string }) => {
   const [centerPosition, setCenterPosition] = React.useState(
     new THREE.Vector3()
   );
+  const [position, setPosition] = React.useState(new THREE.Vector3());
+  const [label, setLabel] = React.useState("");
 
   const { camera } = useThree();
 
@@ -61,7 +64,7 @@ const Scene = ({ url }: { url: string }) => {
     const { center, radius } = getBoundingSphere(o.current);
 
     camera.position.copy(
-      center.clone().add(new THREE.Vector3(0 * radius, 0 * radius, radius))
+      center.clone().add(new THREE.Vector3(1 * radius, 1 * radius, radius))
     );
     camera.updateProjectionMatrix();
 
@@ -69,14 +72,18 @@ const Scene = ({ url }: { url: string }) => {
     setCenterPosition(center);
   }, [camera]);
 
-  const onPointerMove = ({ point, distance, ...e }) => {
-    console.log(point, e, "<<<");
+  const onPointerMove = ({ object, point, distance, ...e }) => {
+    console.log(e, "<<<");
+    setPosition(point);
+    setLabel(object.name);
   };
 
   return (
     <mesh ref={ref}>
       <Lights />
-      {/*{DEBUG && <axesHelper ref={axis} />}*/}
+      <Html position={position} style={{ color: "red", pointerEvents: "none" }}>
+        <h1>{label}</h1>
+      </Html>
       <Model url={url} ref={o} onPointerMove={onPointerMove} />
       {centerPosition && <OrbitControls ref={orbit} target={centerPosition} />}
     </mesh>
