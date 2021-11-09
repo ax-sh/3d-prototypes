@@ -61,12 +61,16 @@ const Scene = () => {
     }
   }, [camera]);
 
+  const onPointerMove = ({ ...e }) => {
+    console.log(e, "<<<");
+  };
+
   const url = "./jacket.glb";
   return (
     <mesh ref={ref}>
       <Lights />
       {/*{DEBUG && <axesHelper ref={axis} />}*/}
-      <Model url={url} ref={o} />
+      <Model url={url} ref={o} onPointerMove={onPointerMove} />
       <OrbitControls ref={orbit} />
     </mesh>
   );
