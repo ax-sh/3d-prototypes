@@ -65,7 +65,7 @@ const Scene = () => {
   return (
     <mesh ref={ref}>
       <Lights />
-      {DEBUG && <axesHelper ref={axis} />}
+      {/*{DEBUG && <axesHelper ref={axis} />}*/}
       <Model url={url} ref={o} />
       <OrbitControls ref={orbit} />
     </mesh>
@@ -91,9 +91,6 @@ export default function Index() {
       <React.Suspense fallback={<Loading />}>
         <Scene />
       </React.Suspense>
-      {/*<OrbitControls*/}
-      {/*  target={[0.0015024840831756592, 1.220431536436081, 0.06491350755095482]}*/}
-      {/*/>*/}
     </JacketCanvas>
   );
 }
