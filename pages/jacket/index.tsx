@@ -51,25 +51,18 @@ const Scene = ({ url }: { url: string }) => {
   const o = React.useRef<Mesh>();
   const orbit = React.useRef<OrbitControlsProps>();
 
-  // useHelper(o, BoxHelper, "#0f0");
-  // useHelper(ref, BoxHelper, "#00f");
-  const axis = React.useRef();
   const { camera } = useThree();
 
   React.useEffect(() => {
     if (!o.current) return;
     const { center, radius } = getBoundingSphere(o.current);
-    console.log(center, orbit);
-    if (axis.current) {
-      axis.current.scale.set(radius, radius, radius);
-      axis.current.position.copy(center);
-    }
+
     camera.position.copy(
       center.clone().add(new THREE.Vector3(radius, radius, radius))
     );
     camera.updateProjectionMatrix();
     if (orbit.current) {
-      console.log(orbit.current.target.copy(center.clone()));
+      orbit.current.target.copy(center);
     }
   }, [camera]);
 
