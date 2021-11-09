@@ -12,7 +12,7 @@ import React from "react";
 
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import { Group, Mesh } from "three";
-import { PrimitiveProps, useThree } from "@react-three/fiber";
+import { MeshProps, PrimitiveProps, useThree } from "@react-three/fiber";
 
 const Loading = () => {
   const {
@@ -35,12 +35,18 @@ const Lights = () => {
   );
 };
 
+interface GLTFMesh extends MeshProps {
+  url: string;
+}
+
 // @ts-ignore
 // eslint-disable-next-line react/display-name
-const Model = React.forwardRef(({ url, ...rest }, ref) => {
-  const { scene } = useGLTF(url);
-  return <primitive object={scene} ref={ref} {...rest} />;
-}) as PrimitiveProps;
+const Model = React.forwardRef<PrimitiveProps, GLTFMesh>(
+  ({ url, ...rest }, ref) => {
+    const { scene } = useGLTF(url);
+    return <primitive object={scene} ref={ref} {...rest} />;
+  }
+);
 
 function getBoundingSphere(o: Mesh) {
   const bbox = new THREE.Box3().setFromObject(o);
@@ -49,13 +55,14 @@ function getBoundingSphere(o: Mesh) {
 
 const Scene = ({ url }: { url: string }) => {
   const ref = React.useRef<Group>();
-  const o = React.useRef<Mesh>();
+  const o = React.useRef<PrimitiveProps>();
   const orbit = React.useRef<OrbitControlsProps>();
   const [centerPosition, setCenterPosition] = React.useState(
     new THREE.Vector3()
   );
   const [position, setPosition] = React.useState(new THREE.Vector3());
   const [label, setLabel] = React.useState("");
+  const [distance, setDistance] = React.useState(0);
 
   const { camera } = useThree();
 
@@ -70,6 +77,7 @@ const Scene = ({ url }: { url: string }) => {
 
     centerPosition.copy(center);
     setCenterPosition(center);
+    setDistance(radius);
   }, [camera]);
 
   const onPointerMove = ({ object, point, distance, ...e }) => {
@@ -85,7 +93,12 @@ const Scene = ({ url }: { url: string }) => {
         <h1>{label}</h1>
       </Html>
       <Model url={url} ref={o} onPointerMove={onPointerMove} />
-      {centerPosition && <OrbitControls ref={orbit} target={centerPosition} />}
+      <OrbitControls
+        ref={orbit}
+        target={centerPosition}
+        maxDistance={distance * 2}
+        minDistance={distance}
+      />
     </mesh>
   );
 };
