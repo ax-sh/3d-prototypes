@@ -50,6 +50,9 @@ const Scene = ({ url }: { url: string }) => {
   const ref = React.useRef<Group>();
   const o = React.useRef<Mesh>();
   const orbit = React.useRef<OrbitControlsProps>();
+  const [centerPosition, setCenterPosition] = React.useState(
+    new THREE.Vector3()
+  );
 
   const { camera } = useThree();
 
@@ -58,16 +61,16 @@ const Scene = ({ url }: { url: string }) => {
     const { center, radius } = getBoundingSphere(o.current);
 
     camera.position.copy(
-      center.clone().add(new THREE.Vector3(radius, radius, radius))
+      center.clone().add(new THREE.Vector3(0 * radius, 0 * radius, radius))
     );
     camera.updateProjectionMatrix();
-    if (orbit.current) {
-      orbit.current.target.copy(center);
-    }
+
+    centerPosition.copy(center);
+    setCenterPosition(center);
   }, [camera]);
 
-  const onPointerMove = ({ ...e }) => {
-    console.log(e, "<<<");
+  const onPointerMove = ({ point, distance, ...e }) => {
+    console.log(point, e, "<<<");
   };
 
   return (
@@ -75,7 +78,7 @@ const Scene = ({ url }: { url: string }) => {
       <Lights />
       {/*{DEBUG && <axesHelper ref={axis} />}*/}
       <Model url={url} ref={o} onPointerMove={onPointerMove} />
-      <OrbitControls ref={orbit} />
+      {centerPosition && <OrbitControls ref={orbit} target={centerPosition} />}
     </mesh>
   );
 };
