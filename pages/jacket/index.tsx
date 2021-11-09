@@ -1,8 +1,8 @@
 import * as THREE from "three";
 
-import { OrbitControls, Sphere, Torus } from "@react-three/drei";
+import { Html, OrbitControls, Torus } from "@react-three/drei";
 import React from "react";
-import { Center3dProps } from "../center-3d";
+
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import { Group } from "three";
 
@@ -34,10 +34,18 @@ const Scene = () => {
   );
 };
 
-export default function Index({}: Center3dProps) {
+const Loading = () => {
+  return (
+    <Html style={{ background: "red" }}>
+      <h1>Loading</h1>
+    </Html>
+  );
+};
+
+export default function Index() {
   return (
     <JacketCanvas>
-      <React.Suspense fallback={null}>
+      <React.Suspense fallback={<Loading />}>
         <Scene />
       </React.Suspense>
       <OrbitControls />
