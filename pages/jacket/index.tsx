@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { Html, OrbitControls, Torus } from "@react-three/drei";
+import { Html, OrbitControls, useGLTF, useProgress } from "@react-three/drei";
 import React from "react";
 
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
@@ -14,30 +14,37 @@ const Lights = () => {
   );
 };
 
-const Model = () => {
+const Model = ({ url }: { url: string }) => {
+  const { scene } = useGLTF(url);
   return (
     <group>
-      <Torus>
-        <meshPhysicalMaterial color={"#f00"} />
-      </Torus>
+      <primitive object={scene} />
     </group>
   );
 };
 
 const Scene = () => {
   const ref = React.useRef<Group>();
+
+  const url = "./jacket.glb";
+
   return (
     <group ref={ref}>
       <Lights />
-      <Model />
+      <Model url={url} />
     </group>
   );
 };
 
 const Loading = () => {
+  const {
+    // active,
+    progress,
+    // errors, item, loaded, total
+  } = useProgress();
   return (
-    <Html style={{ background: "red" }}>
-      <h1>Loading</h1>
+    <Html style={{ color: "red" }} center>
+      <h1>{progress} % loaded</h1>
     </Html>
   );
 };
