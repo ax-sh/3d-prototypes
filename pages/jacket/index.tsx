@@ -45,7 +45,26 @@ interface GLTFMesh extends MeshProps {
 // eslint-disable-next-line react/display-name
 const Model = React.forwardRef<PrimitiveProps, GLTFMesh>(
   ({ url, ...rest }, ref) => {
-    const { scene } = useGLTF(url);
+    const { scene, materials } = useGLTF(url);
+    const { color } = useControls({
+      color: "#ffffff",
+    });
+
+    React.useMemo(() => {
+      // const m = materials?.[""];
+      // if (!m) return;
+      // console.log(m);
+      // if (color !== "#ffffff") m.color.set(color);
+      // console.log(color);
+      // m.transparent = true;
+      // m.opacity = 0.5;
+      Object.keys(materials).forEach((i) => {
+        // if() check material prefix for functionality
+        if (color !== "#ffffff") console.log(materials?.[i]?.color.set(color));
+
+        console.log("materials", i);
+      });
+    }, [materials, color]);
     return <primitive object={scene} ref={ref} {...rest} />;
   }
 );
@@ -87,7 +106,7 @@ const Scene = ({ url }: { url: string }) => {
     setPosition(point);
     setLabel(object.name);
   };
-  const {env} = useControls({
+  const { env } = useControls({
     env: {
       value: "sunset",
       options: [
