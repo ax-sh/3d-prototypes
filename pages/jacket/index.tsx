@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import {
+  Environment,
   Html,
   OrbitControls,
   OrbitControlsProps,
@@ -13,6 +14,7 @@ import React from "react";
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import { Group, Mesh } from "three";
 import { MeshProps, PrimitiveProps, useThree } from "@react-three/fiber";
+import { useControls } from "leva";
 
 const Loading = () => {
   const {
@@ -85,10 +87,33 @@ const Scene = ({ url }: { url: string }) => {
     setPosition(point);
     setLabel(object.name);
   };
+  const {env} = useControls({
+    env: {
+      value: "sunset",
+      options: [
+        "sunset",
+        "dawn",
+        "night",
+        "warehouse",
+        "forest",
+        "apartment",
+        "studio",
+        "city",
+        "park",
+        "lobby",
+      ],
+    },
+  });
 
   return (
     <mesh ref={ref}>
       <Lights />
+      <Environment
+        background={false}
+        path="/"
+        preset={env}
+        scene={undefined} // adds the ability to pass a custom THREE.Scene
+      />
       <Html position={position} style={{ color: "red", pointerEvents: "none" }}>
         <h1>{label}</h1>
       </Html>
