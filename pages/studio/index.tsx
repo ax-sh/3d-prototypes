@@ -13,7 +13,14 @@ interface StudioProps {
 const Studio = ({ children }: StudioProps) => {
   const { background } = useControls({ background: "000" });
   return (
-    <Canvas style={{ height: "100vh" }}>
+    <Canvas
+      style={{ height: "100vh" }}
+      gl={{ preserveDrawingBuffer: true, physicallyCorrectLights: true }}
+      shadows
+      dpr={[1, 1.5]}
+      // camera={{ position: [0, 0, 150], fov: 50 }}
+    >
+      <ambientLight intensity={0.25} />
       {children}
       <color attach="background" args={[background]} />
     </Canvas>
