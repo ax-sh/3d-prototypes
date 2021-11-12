@@ -5,13 +5,17 @@ import Head from "next/head";
 import React from "react";
 import JacketCanvas from "../../components/JacketCanvas/JacketCanvas";
 import Loader from "../../components/Loader";
+import Model from "../../components/Model";
 
 interface StudioProps {
   children: React.ReactNode;
 }
 
 const Studio = ({ children }: StudioProps) => {
-  const { background } = useControls({ background: "000" });
+  const { background, intensity } = useControls({
+    background: "#000",
+    intensity: 0.5,
+  });
   return (
     <Canvas
       style={{ height: "100vh" }}
@@ -20,8 +24,8 @@ const Studio = ({ children }: StudioProps) => {
       dpr={[1, 1.5]}
       // camera={{ position: [0, 0, 150], fov: 50 }}
     >
-      <ambientLight intensity={0.25} />
-      {children}
+      <ambientLight intensity={intensity} />
+      <React.Suspense fallback={<Loader />}>{children}</React.Suspense>
       <color attach="background" args={[background]} />
     </Canvas>
   );
@@ -39,15 +43,16 @@ const Scene = ({ url, ...rest }: SceneProps) => {
   };
   return (
     <group {...rest}>
-      <Sphere onPointerMove={onPointerMove}>
-        <meshNormalMaterial />
-      </Sphere>
+      <Model url={url} />
+      {/*<Sphere onPointerMove={onPointerMove}>*/}
+      {/*  <meshNormalMaterial />*/}
+      {/*</Sphere>*/}
     </group>
   );
 };
 
 export default function () {
-  const url = "";
+  const url = "/jacket.glb";
   const ref = React.useRef();
   return (
     <>
